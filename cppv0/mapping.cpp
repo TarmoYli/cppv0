@@ -4,10 +4,10 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <conio.h>
+#include <conio.h>                      //t‰‰lt‰ _getch
 #include <string>
 #include <cstdlib>
-#include <time.h>
+#include <ctime>
 #include <set>
 #include <chrono>
 
@@ -46,8 +46,9 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
 
     while (isRunning) // jos "isRunning = false" lopettaa threadin.
     {
-        std::cout << "liiku w,a,s,d paina enter aloittaaksesi ('q' lopettaa ohjelman):";
-        ch = _getch();                                //ennen getchi‰ ehk‰ printtaa kartan jotta getch tulee vasta printin j‰lkeen eik‰ odota inputtia
+        printMap(playMap);                            // tai ehk‰ t‰t‰ ei t‰ss‰ tarvita
+        std::cout << "liiku w,a,s,d paina enter aloittaaksesi ('q' lopettaa ohjelman):\n";
+        ch = _getch();                                // ennen getchi‰ ehk‰ printtaa kartan jotta getch tulee vasta printin j‰lkeen eik‰ odota inputtia
         {
             std::unique_lock<std::mutex> lock(mtx);
             cond.wait(lock, [] { return !inputReady; });
@@ -99,28 +100,14 @@ void mapping::printPlayMap(std::vector<std::vector<char>>& playMap) {
 
         system("cls");
         playMap[locy][locx] = 'X';
-        for (const std::vector<char>& row : playMap)                    // t‰st‰ oma funktio? tarvitaan kahdessa muussakin paikkaa ja ehk‰ lopuksi.
-        {
-            for (char item : row)
-            {
-                std::cout << item << " ";
-            }
-            std::cout << std::endl;
-        }
+        printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;   // lis‰‰ t‰h‰n tapetut viholliset ja/tai miss‰ ne on tapettu tee ehk‰ infoOut funktio
         if (checkForEnemy(locy,locx))
         {
             system("cls");
             combat();
             system("cls");
-            for (const std::vector<char>& row : playMap)                
-            {
-                for (char item : row)
-                {
-                    std::cout << item << " ";
-                }
-                std::cout << std::endl;
-            }
+            printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
         }
         inputReady = false;
@@ -133,8 +120,8 @@ void mapping::combat()
     JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
     std::cout << "\nNimi: " << normi.getName() << "\nhˆˆki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
     normi.huuto();
-    char testi;
-    std::cout << "\nT‰h‰n joku juttu koita vaikka aa: " << std::endl;
+    char testi;                                                             // t‰st‰ asti poistoon kaikki
+    std::cout << "\nT‰h‰n joku juttu koita vaikka aa: " << std::endl;       
     std::cin >> testi;
     switch (testi)                                                          // poista t‰m‰ koko switch case testi
     {
@@ -157,15 +144,15 @@ bool mapping::checkForEnemy(int y, int x)                           // tee eri f
     int Amount = round(sqrt(yForMap * xForMap));
     srand(time(0));
     std::pair<int, int> crds;
-    while (uni.size() != Amount)                                    // t‰m‰ looppi ei k‰y jos setist‰ poistellaan arvoja. eli t‰m‰n loopin pit‰‰ olla omassa funktiossaan.
-    {                                                               // jos halutaan poistaa setist‰ arvoja.
+    while (uni.size() != Amount)                                     // t‰m‰ looppi ei k‰y jos setist‰ poistellaan arvoja. eli t‰m‰n loopin pit‰‰ olla omassa funktiossaan.
+    {                                                                // jos halutaan poistaa setist‰ arvoja.
         do
         {
             crds = std::make_pair(rand() % xForMap, rand() % yForMap);
-        } while (crds == std::make_pair(0, 0));
+        } while (crds == std::make_pair(0, 0));                        // jos crds arvo(t) on 0,0 while looppi toistuu joten insertiin ei koskaan mene 0,0
         uni.insert(crds);
     }
-    std::pair<int, int> verrokki = std::make_pair(y, x);
+    std::pair<int, int> verrokki = std::make_pair(y, x);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
     bool hit = uni.find(verrokki) != uni.end();                       // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
     //uni.erase(verrokki);                                            // poistaa setist‰ ko. arvoparin.
     return hit;
