@@ -26,7 +26,7 @@ int locy = 0;                            //lokaatio y   n‰ist‰ koordeista l‰hdet
 int xForMap;                             //kuinka monta alkiota (#) per vektori eli x-akseli
 int yForMap;                             //kuinka monta vektoria vektorissa eli y-akseli
 
-std::set<std::pair<int, int>> uni;      
+std::set<std::pair<int, int>> enemyCoords;      
 
 std::vector<std::vector<char>> mapping::mapSize()
 {
@@ -36,8 +36,23 @@ std::vector<std::vector<char>> mapping::mapSize()
     std::cin >> yForMap;
 
     std::vector<std::vector<char>> playMap(yForMap, std::vector<char>(xForMap, '#'));
-
+    setEnemyLocation();
     return playMap;
+}
+
+void mapping::setEnemyLocation()                                        // suoritettava ennen checkForEnemy() funktiota.
+{
+    int Amount = round(sqrt(yForMap * xForMap));
+    srand(time(0));
+    std::pair<int, int> crds;
+    while (enemyCoords.size() != Amount)                               // toistetaan kunnes .size on sama kuin Amount.      
+    {                                                                
+        do
+        {
+            crds = std::make_pair(rand() % xForMap, rand() % yForMap);
+        } while (crds == std::make_pair(0, 0));                        // jos crds arvo(t) on 0,0 while looppi toistuu joten insertiin ei koskaan mene 0,0
+        enemyCoords.insert(crds);
+    }
 }
 
 std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>& playMap) {
@@ -46,8 +61,7 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
 
     while (isRunning) // jos "isRunning = false" lopettaa threadin.
     {
-        printMap(playMap);                            // tai ehk‰ t‰t‰ ei t‰ss‰ tarvita
-        std::cout << "liiku w,a,s,d paina enter aloittaaksesi ('q' lopettaa ohjelman):\n";
+        std::cout << "liiku w,a,s,d paina enter aloittaaksesi ('q' lopettaa ohjelman):";
         ch = _getch();                                // ennen getchi‰ ehk‰ printtaa kartan jotta getch tulee vasta printin j‰lkeen eik‰ odota inputtia
         {
             std::unique_lock<std::mutex> lock(mtx);
@@ -102,9 +116,9 @@ void mapping::printPlayMap(std::vector<std::vector<char>>& playMap) {
         playMap[locy][locx] = 'X';
         printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;   // lis‰‰ t‰h‰n tapetut viholliset ja/tai miss‰ ne on tapettu tee ehk‰ infoOut funktio
-        if (checkForEnemy(locy,locx))
+        if (checkForEnemy(locx,locy))
         {
-            system("cls");
+            //system("cls");
             combat();
             system("cls");
             printMap(playMap);
@@ -139,21 +153,11 @@ void mapping::combat()
         break;
     }  
 }
-bool mapping::checkForEnemy(int y, int x)                           // tee eri funktio alkuun "make enemy location" jossa tehd‰‰n set, jotta siit‰ voi poistaa arvoja.
+
+bool mapping::checkForEnemy(int locx, int locy)
 {
-    int Amount = round(sqrt(yForMap * xForMap));
-    srand(time(0));
-    std::pair<int, int> crds;
-    while (uni.size() != Amount)                                     // t‰m‰ looppi ei k‰y jos setist‰ poistellaan arvoja. eli t‰m‰n loopin pit‰‰ olla omassa funktiossaan.
-    {                                                                // jos halutaan poistaa setist‰ arvoja.
-        do
-        {
-            crds = std::make_pair(rand() % xForMap, rand() % yForMap);
-        } while (crds == std::make_pair(0, 0));                        // jos crds arvo(t) on 0,0 while looppi toistuu joten insertiin ei koskaan mene 0,0
-        uni.insert(crds);
-    }
-    std::pair<int, int> verrokki = std::make_pair(y, x);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
-    bool hit = uni.find(verrokki) != uni.end();                       // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
+    std::pair<int, int> verrokki = std::make_pair(locx, locy);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
+    bool hit = enemyCoords.find(verrokki) != enemyCoords.end();       // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
     //uni.erase(verrokki);                                            // poistaa setist‰ ko. arvoparin.
     return hit;
 }

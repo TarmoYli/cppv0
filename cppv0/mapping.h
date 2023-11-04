@@ -18,6 +18,8 @@ namespace mapping
 	bool checkForEnemy(int y,int x);
 
 	void printMap(std::vector<std::vector<char>>& playMap);
+
+	void setEnemyLocation();
 }
 
 #endif // !MAPPING_H

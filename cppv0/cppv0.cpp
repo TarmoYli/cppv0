@@ -16,9 +16,9 @@ using namespace csv;
 
 int main()
 {
-    std::vector<std::vector<char>> komap = mapSize();
-    std::thread mapMove(userInput, std::ref(komap));
-    std::thread mapPrinter(printPlayMap, std::ref(komap));
+    std::vector<std::vector<char>> komap = mapping::mapSize();
+    std::thread mapMove(mapping::userInput, std::ref(komap));
+    std::thread mapPrinter(mapping::printPlayMap, std::ref(komap));
 
     mapMove.join();
     mapPrinter.join();
