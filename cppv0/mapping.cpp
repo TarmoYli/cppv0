@@ -26,7 +26,9 @@ int locy = 0;                            //lokaatio y   n‰ist‰ koordeista l‰hdet
 int xForMap;                             //kuinka monta alkiota (#) per vektori eli x-akseli
 int yForMap;                             //kuinka monta vektoria vektorissa eli y-akseli
 
-std::set<std::pair<int, int>> enemyCoords;      
+std::set<std::pair<int, int>> enemyCoords;          // k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
+std::vector<std::pair<int, int>> enemyKillCoords;
+std::vector<std::string> enemyKillName;
 
 std::vector<std::vector<char>> mapping::mapSize()
 {
@@ -55,7 +57,8 @@ void mapping::setEnemyLocation()                                        // suori
     }
 }
 
-std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>& playMap) {
+std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>& playMap)
+{
 
     char ch;
 
@@ -107,19 +110,24 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
     return playMap;
 }
 
-void mapping::printPlayMap(std::vector<std::vector<char>>& playMap) {
-    while (isRunning) {
+void mapping::printPlayMap(std::vector<std::vector<char>>& playMap)
+{
+    
+    while (isRunning)
+    {    
         std::unique_lock<std::mutex> lock(mtx);
         cond.wait(lock, [] { return inputReady; });
 
         system("cls");
         playMap[locy][locx] = 'X';
         printMap(playMap);
-        std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;   // lis‰‰ t‰h‰n tapetut viholliset ja/tai miss‰ ne on tapettu tee ehk‰ infoOut funktio
-        if (checkForEnemy(locx,locy))
+        std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
+        printKillStats();
+        if (checkForEnemy(locy,locx))
         {
             //system("cls");
-            combat();
+            enemyKillCoords.push_back(std::make_pair(locy,locx));
+            enemyKillName.push_back(combat());
             system("cls");
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
@@ -129,7 +137,7 @@ void mapping::printPlayMap(std::vector<std::vector<char>>& playMap) {
     }
 }
 
-void mapping::combat()
+std::string mapping::combat()
 {    
     JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
     std::cout << "\nNimi: " << normi.getName() << "\nhˆˆki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
@@ -151,14 +159,15 @@ void mapping::combat()
         std::cout << "se oli joku muu kuin a tai b" << std::endl;
         std::this_thread::sleep_for(std::chrono::seconds(2));
         break;
-    }  
+    }
+    return normi.getName();
 }
 
-bool mapping::checkForEnemy(int locx, int locy)
+bool mapping::checkForEnemy(int locy, int locx)
 {
-    std::pair<int, int> verrokki = std::make_pair(locx, locy);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
-    bool hit = enemyCoords.find(verrokki) != enemyCoords.end();       // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
-    //uni.erase(verrokki);                                            // poistaa setist‰ ko. arvoparin.
+    std::pair<int, int> verrokki = std::make_pair(locy, locx);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
+    bool hit = enemyCoords.find(verrokki) != enemyCoords.end();             // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
+    enemyCoords.erase(verrokki);                                            // poistaa setist‰ ko. arvoparin.
     return hit;
 }
 
@@ -171,5 +180,13 @@ void mapping::printMap(std::vector<std::vector<char>>& playMap)
             std::cout << item << " ";
         }
         std::cout << std::endl;
+    }
+}
+
+void mapping::printKillStats()
+{
+    for (int i = 0; i < enemyKillCoords.size(); i++)
+    {
+        std::cout << enemyKillName[i] << "(" << enemyKillCoords[i].first << "," << enemyKillCoords[i].second << ")" << std::endl;
     }
 }

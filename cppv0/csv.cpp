@@ -22,9 +22,9 @@ std::string csv::getEnemyName()
 	}
 
 	srand(time(0));
-	int y = eNames.capacity();
-	int z = rand() % y;
-	std::string eName = eNames.at(z);
+	int eNameCsvCap = eNames.capacity();
+	int eNameCsvIndex = rand() % eNameCsvCap;
+	std::string eName = eNames.at(eNameCsvIndex);
 	
 	allAnim.close();
 	return eName;

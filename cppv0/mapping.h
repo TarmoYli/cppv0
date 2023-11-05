@@ -13,13 +13,15 @@ namespace mapping
 
 	void printPlayMap(std::vector<std::vector<char>>& playMap);
 
-	void combat();
+	std::string combat();
 
 	bool checkForEnemy(int y,int x);
 
 	void printMap(std::vector<std::vector<char>>& playMap);
 
 	void setEnemyLocation();
+
+	void printKillStats();
 }
 
 #endif // !MAPPING_H
