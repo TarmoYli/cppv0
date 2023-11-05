@@ -7,8 +7,8 @@
 #include <conio.h>                      //t‰‰lt‰ _getch
 #include <string>
 #include <cstdlib>
-#include <ctime>
-#include <set>
+#include <ctime>                        //k‰ytet‰‰n randissa
+#include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
 #include <chrono>
 
 #include "javihu.h"
@@ -18,9 +18,8 @@
 std::mutex mtx;
 std::condition_variable cond;
 
-bool inputReady = false;
+bool inputReady = false;                 // n‰iden muuttujien n‰kyvyyksien tarvinee olla laajempia joten alustetaan t‰ss‰.
 bool isRunning = true;                   //(muista lis‰t‰ vihollisen kohtaaminen) -> (on varmaan ehk‰ toimiva nyt) -> onkin, eli nyt vaan se itse taistelu eli plr class mukaan
-
 int locx = 0;                            //lokaatio x   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
 int locy = 0;                            //lokaatio y   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
 int xForMap;                             //kuinka monta alkiota (#) per vektori eli x-akseli
@@ -80,8 +79,8 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
             else if (ch == 's')
             {
                 locy += 1;
-                if (locy >= playMap.size() - 1)
-                    locy = playMap.size() - 1;
+                if (locy >= playMap.size() - 1)                         //n‰it‰ ei varmaan saa funktioitua kun tarvii varmistaa ettei mene vektorit out-of-boundsiin
+                    locy = playMap.size() - 1;                          //jokaisessa iffiss‰ muuttujien k‰sittely liev‰sti erilaista
                 playMap[locy][locx] = 'O';
             }
             else if (ch == 'd')
