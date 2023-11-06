@@ -10,6 +10,7 @@
 #include <ctime>                        //k‰ytet‰‰n randissa
 #include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
 #include <chrono>
+#include <unordered_map>
 
 #include "javihu.h"
 #include "mapping.h"
@@ -26,8 +27,9 @@ int xForMap;                             //kuinka monta alkiota (#) per vektori 
 int yForMap;                             //kuinka monta vektoria vektorissa eli y-akseli
 
 std::set<std::pair<int, int>> enemyCoords;          // k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
-std::vector<std::pair<int, int>> enemyKillCoords;
+std::vector<std::pair<int, int>> enemyKillCoords;   // t‰m‰n voinee poistaa ellei sit‰ sitten halua k‰ytt‰‰ joka mapin j‰lkeen ett‰ miss‰ mik‰kin tapettiin... kaipa se on yksi toiminnallisuus sekin.
 std::vector<std::string> enemyKillName;
+std::unordered_map<std::string, int> enemyKills;
 std::vector<std::vector<char>> playMap;
 
 void mapping::mapSize()
@@ -120,11 +122,6 @@ void mapping::printPlayMap()
         playMap[locy][locx] = 'X';
         printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
-        printKillStats();
-        if (checkMap(playMap))
-        {
-            std::cout << "done!" << std::endl;
-        }
         if (checkForEnemy(locy,locx))
         {
             //system("cls");
@@ -133,6 +130,15 @@ void mapping::printPlayMap()
             system("cls");
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
+        }
+        if (mapping::checkMap())
+        {
+            std::cout << "kartta l‰p‰isty." << std::endl;
+            mapping::printKillStats();
+            std::cout << "uusi kartta" << std::endl;
+            locx = 0;
+            locy = 0;
+            mapping::mapSize();
         }
         inputReady = false;
         cond.notify_one();
@@ -187,15 +193,23 @@ void mapping::printMap(std::vector<std::vector<char>>& playMap)
 
 void mapping::printKillStats()
 {
-    for (int i = 0; i < enemyKillCoords.size(); i++)
+    std::cout << "T‰ss‰ kartassa tuhosit: \n" << std::endl;
+    for (int i = 0; i < enemyKillName.size(); i++)
     {
-        std::cout << enemyKillName[i] << "(" << enemyKillCoords[i].first << "," << enemyKillCoords[i].second << ")" << std::endl;
+        std::cout << enemyKillName[i] << "(" << std::endl;
+        enemyKills[enemyKillName[i]]++;
+    }
+    enemyKillName.clear();                              // tarvii tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
+    std::cout << "kaikki tuhotut: \n" << std::endl;
+    for (auto j : enemyKills)
+    {
+        std::cout << j.first << " " << j.second << std::endl;
     }
 }
 
-bool mapping::checkMap(std::vector<std::vector<char>>& playMap)
-{
-    char target = '#';
+bool mapping::checkMap()                                // jotta toimii if-lauseessa oletuksena palautetaan true eli haussa ei lˆydy '#' merkki‰ ja if toteutuu,
+{                                                       // jos haku t‰rpp‰‰ eli vektoreista lˆytyy '#' niin palautetaan false jolloin if ei toteudu.
+    char target = '#';                                  
     bool mapHit = true;
     for (const std::vector<char>& row : playMap)
     {

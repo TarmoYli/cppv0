@@ -23,7 +23,7 @@ namespace mapping
 
 	void printKillStats();
 
-	bool checkMap(std::vector<std::vector<char>>& playMap);
+	bool checkMap();
 }
 
 #endif // !MAPPING_H
