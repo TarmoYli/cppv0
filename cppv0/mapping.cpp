@@ -30,7 +30,7 @@ std::vector<std::pair<int, int>> enemyKillCoords;
 std::vector<std::string> enemyKillName;
 std::vector<std::vector<char>> playMap;
 
-std::vector<std::vector<char>> mapping::mapSize()
+void mapping::mapSize()
 {
     std::cout << "Anna x akselin pituus: " << std::endl;
     std::cin >> xForMap;
@@ -39,7 +39,6 @@ std::vector<std::vector<char>> mapping::mapSize()
 
     playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, '#'));
     setEnemyLocation();
-    return playMap;
 }
 
 void mapping::setEnemyLocation()                                        // suoritettava ennen checkForEnemy() funktiota.
@@ -57,7 +56,7 @@ void mapping::setEnemyLocation()                                        // suori
     }
 }
 
-std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>& playMap)
+std::vector<std::vector<char>> mapping::userInput()
 {
 
     char ch;
@@ -110,7 +109,7 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
     return playMap;
 }
 
-void mapping::printPlayMap(std::vector<std::vector<char>>& playMap)
+void mapping::printPlayMap()
 {
     
     while (isRunning)

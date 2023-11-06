@@ -7,11 +7,11 @@
 
 namespace mapping
 {
-	std::vector<std::vector<char>> mapSize();
+	void mapSize();
 
-	std::vector<std::vector<char>> userInput(std::vector<std::vector<char>>& playMap);
+	std::vector<std::vector<char>> userInput();
 
-	void printPlayMap(std::vector<std::vector<char>>& playMap);
+	void printPlayMap();
 
 	std::string combat();
 
