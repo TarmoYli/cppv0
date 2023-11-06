@@ -18,7 +18,7 @@
 std::mutex mtx;
 std::condition_variable cond;
 
-bool inputReady = false;                 // n‰iden muuttujien n‰kyvyyksien tarvinee olla laajempia joten alustetaan t‰ss‰.
+bool inputReady = false;                 //n‰iden muuttujien n‰kyvyyksien tarvinee olla laajempia joten alustetaan t‰ss‰.
 bool isRunning = true;                   //(muista lis‰t‰ vihollisen kohtaaminen) -> (on varmaan ehk‰ toimiva nyt) -> onkin, eli nyt vaan se itse taistelu eli plr class mukaan
 int locx = 0;                            //lokaatio x   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
 int locy = 0;                            //lokaatio y   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
@@ -28,6 +28,7 @@ int yForMap;                             //kuinka monta vektoria vektorissa eli 
 std::set<std::pair<int, int>> enemyCoords;          // k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
 std::vector<std::pair<int, int>> enemyKillCoords;
 std::vector<std::string> enemyKillName;
+std::vector<std::vector<char>> playMap;
 
 std::vector<std::vector<char>> mapping::mapSize()
 {
@@ -36,7 +37,7 @@ std::vector<std::vector<char>> mapping::mapSize()
     std::cout << "Anna y akselin pituus: " << std::endl;
     std::cin >> yForMap;
 
-    std::vector<std::vector<char>> playMap(yForMap, std::vector<char>(xForMap, '#'));
+    playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, '#'));
     setEnemyLocation();
     return playMap;
 }
@@ -79,9 +80,9 @@ std::vector<std::vector<char>> mapping::userInput(std::vector<std::vector<char>>
             else if (ch == 's')
             {
                 locy += 1;
-                if (locy >= playMap.size() - 1)                         //n‰it‰ ei varmaan saa funktioitua kun tarvii varmistaa ettei mene vektorit out-of-boundsiin
-                    locy = playMap.size() - 1;                          //jokaisessa iffiss‰ muuttujien k‰sittely liev‰sti erilaista
-                playMap[locy][locx] = 'O';
+                if (locy >= playMap.size() - 1)                         //n‰it‰ ei varmaan saa funktioitua kun tarvii varmistaa
+                    locy = playMap.size() - 1;                          //ettei mene vektorit out-of-boundsiin.
+                playMap[locy][locx] = 'O';                              //jokaisessa iffiss‰ muuttujien k‰sittely liev‰sti erilaista
             }
             else if (ch == 'd')
             {
@@ -116,12 +117,15 @@ void mapping::printPlayMap(std::vector<std::vector<char>>& playMap)
     {    
         std::unique_lock<std::mutex> lock(mtx);
         cond.wait(lock, [] { return inputReady; });
-
         system("cls");
         playMap[locy][locx] = 'X';
         printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
         printKillStats();
+        if (checkMap(playMap))
+        {
+            std::cout << "done!" << std::endl;
+        }
         if (checkForEnemy(locy,locx))
         {
             //system("cls");
@@ -188,4 +192,19 @@ void mapping::printKillStats()
     {
         std::cout << enemyKillName[i] << "(" << enemyKillCoords[i].first << "," << enemyKillCoords[i].second << ")" << std::endl;
     }
+}
+
+bool mapping::checkMap(std::vector<std::vector<char>>& playMap)
+{
+    char target = '#';
+    bool mapHit = true;
+    for (const std::vector<char>& row : playMap)
+    {
+        if (std::find(row.begin(), row.end(), target) != row.end())
+        {
+            mapHit = false;
+            break;
+        }
+    }
+    return mapHit;
 }

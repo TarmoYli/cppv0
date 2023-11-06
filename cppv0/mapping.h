@@ -22,6 +22,8 @@ namespace mapping
 	void setEnemyLocation();
 
 	void printKillStats();
+
+	bool checkMap(std::vector<std::vector<char>>& playMap);
 }
 
 #endif // !MAPPING_H
