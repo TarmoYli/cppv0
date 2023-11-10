@@ -19,7 +19,7 @@ namespace mapping
 
 	void printMap(std::vector<std::vector<char>>& playMap);
 
-	void setEnemyLocation();
+	void setEnemyLocation(std::set<std::pair<int,int>>& enemyCoords);
 
 	void printKillStats();
 

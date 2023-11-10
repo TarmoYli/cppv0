@@ -29,7 +29,7 @@ int yForMap;                             //kuinka monta vektoria vektorissa eli 
 std::set<std::pair<int, int>> enemyCoords;          // k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
 std::vector<std::pair<int, int>> enemyKillCoords;   // t‰m‰n voinee poistaa ellei sit‰ sitten halua k‰ytt‰‰ joka mapin j‰lkeen ett‰ miss‰ mik‰kin tapettiin... kaipa se on yksi toiminnallisuus sekin.
 std::vector<std::string> enemyKillName;
-std::unordered_map<std::string, int> enemyKills;
+std::unordered_map<std::string, int> enemyKills;    // nimet on uniikkeja (keys), m‰‰r‰t inttej‰ (values)
 std::vector<std::vector<char>> playMap;
 
 void mapping::mapSize()
@@ -40,27 +40,26 @@ void mapping::mapSize()
     std::cin >> yForMap;
 
     playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, '#'));
-    setEnemyLocation();
+    setEnemyLocation(enemyCoords);
 }
 
-void mapping::setEnemyLocation()                                        // suoritettava ennen checkForEnemy() funktiota.
+void mapping::setEnemyLocation(std::set<std::pair<int,int>> &enemyCoords)           // suoritettava ennen checkForEnemy() funktiota.
 {
     int Amount = round(sqrt(yForMap * xForMap));
     srand(time(0));
     std::pair<int, int> crds;
-    while (enemyCoords.size() != Amount)                               // toistetaan kunnes .size on sama kuin Amount.      
+    while (enemyCoords.size() != Amount)                                            // toistetaan kunnes .size on sama kuin Amount.      
     {                                                                
         do
         {
             crds = std::make_pair(rand() % xForMap, rand() % yForMap);
-        } while (crds == std::make_pair(0, 0));                        // jos crds arvo(t) on 0,0 while looppi toistuu joten insertiin ei koskaan mene 0,0
+        } while (crds == std::make_pair(0, 0));                                     // jos crds arvo(t) on 0,0 while looppi toistuu joten insertiin ei koskaan mene 0,0
         enemyCoords.insert(crds);
     }
 }
 
 std::vector<std::vector<char>> mapping::userInput()
 {
-
     char ch;
 
     while (isRunning) // jos "isRunning = false" lopettaa threadin.
@@ -131,14 +130,14 @@ void mapping::printPlayMap()
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
         }
-        if (mapping::checkMap())
+        if (checkMap())
         {
             std::cout << "kartta l‰p‰isty." << std::endl;
-            mapping::printKillStats();
+            printKillStats();
             std::cout << "uusi kartta" << std::endl;
             locx = 0;
             locy = 0;
-            mapping::mapSize();
+            mapSize();
         }
         inputReady = false;
         cond.notify_one();
@@ -150,31 +149,31 @@ std::string mapping::combat()
     JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
     std::cout << "\nNimi: " << normi.getName() << "\nhˆˆki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
     normi.huuto();
-    char testi;                                                             // t‰st‰ asti poistoon kaikki
-    std::cout << "\nT‰h‰n joku juttu koita vaikka aa: " << std::endl;       
-    std::cin >> testi;
-    switch (testi)                                                          // poista t‰m‰ koko switch case testi
-    {
-    case 'a':
-        std::cout << "se oli A" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));               // Poista n‰m‰ sleepit ja <chrono> jos ei k‰ytet‰.
-        break;
-    case 'b':
-        std::cout << "se oli B" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        break;
-    default:
-        std::cout << "se oli joku muu kuin a tai b" << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));
-        break;
-    }
+    //char testi;                                                             // t‰st‰ asti poistoon kaikki
+    //std::cout << "\nT‰h‰n joku juttu koita vaikka aa: " << std::endl;       
+    //std::cin >> testi;
+    //switch (testi)                                                          // poista t‰m‰ koko switch case testi
+    //{
+    //case 'a':
+    //    std::cout << "se oli A" << std::endl;
+    //    std::this_thread::sleep_for(std::chrono::seconds(2));               // Poista n‰m‰ sleepit ja <chrono> jos ei k‰ytet‰.
+    //    break;
+    //case 'b':
+    //    std::cout << "se oli B" << std::endl;
+    //    std::this_thread::sleep_for(std::chrono::seconds(2));
+    //    break;
+    //default:
+    //    std::cout << "se oli joku muu kuin a tai b" << std::endl;
+    //    std::this_thread::sleep_for(std::chrono::seconds(2));
+    //    break;
+    //}
     return normi.getName();
 }
 
 bool mapping::checkForEnemy(int locy, int locx)
 {
-    std::pair<int, int> verrokki = std::make_pair(locy, locx);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx
-    bool hit = enemyCoords.find(verrokki) != enemyCoords.end();             // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut ja palauttaa iterin eik‰ palauta endi‰.
+    std::pair<int, int> verrokki = std::make_pair(locy, locx);              // tehd‰‰n verrokki muuttuja jonka arvot otetaan muuttujista locy & locx (eli miss‰ pelaaja on)
+    bool hit = enemyCoords.find(verrokki) != enemyCoords.end();             // Jos find palauttaa NOT .end() on arvo TRUE, silloin find on osunut eik‰ palauta endi‰.
     enemyCoords.erase(verrokki);                                            // poistaa setist‰ ko. arvoparin.
     return hit;
 }
@@ -196,7 +195,7 @@ void mapping::printKillStats()
     std::cout << "T‰ss‰ kartassa tuhosit: \n" << std::endl;
     for (int i = 0; i < enemyKillName.size(); i++)
     {
-        std::cout << enemyKillName[i] << "(" << std::endl;
+        std::cout << enemyKillName[i] << std::endl;
         enemyKills[enemyKillName[i]]++;
     }
     enemyKillName.clear();                              // tarvii tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
@@ -213,6 +212,8 @@ bool mapping::checkMap()                                // jotta toimii if-lause
     bool mapHit = true;
     for (const std::vector<char>& row : playMap)
     {
+        //mapHit = std::find(row.begin(), row.end(), target) == row.end(); t‰m‰ ei toimi loopissa
+        
         if (std::find(row.begin(), row.end(), target) != row.end())
         {
             mapHit = false;
