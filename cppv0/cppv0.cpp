@@ -21,7 +21,7 @@ int main()
     plr.setName();
     map.mapSize();
     std::thread mapMove([&map]() {map.userInput();});
-    std::thread mapPrinter([&map]() {map.printPlayMap();});
+    std::thread mapPrinter([&map,&plr]() {map.printPlayMap(plr);});
 
     mapMove.join();
     mapPrinter.join();

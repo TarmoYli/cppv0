@@ -100,7 +100,7 @@ std::vector<std::vector<char>> mapping::userInput()
     return playMap;
 }
 
-void mapping::printPlayMap()
+void mapping::printPlayMap(Player& plr)
 {
     
     while (isRunning)
@@ -115,7 +115,7 @@ void mapping::printPlayMap()
         {
             //system("cls");
             enemyKillCoords.push_back(std::make_pair(locy,locx));
-            enemyKillName.push_back(combat());
+            enemyKillName.push_back(combat(plr));
             system("cls");
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
@@ -134,12 +134,13 @@ void mapping::printPlayMap()
     }
 }
 
-std::string mapping::combat()
+std::string mapping::combat(Player& plr)
 {    
     JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
     std::cout << "\nNimi: " << normi.getName() << "\nhööki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
     normi.huuto();
-    
+    std::cout << plr.getName() << " taistelisi tässä" << std::endl;
+    std::cin.get();
     return normi.getName();
 }
 
