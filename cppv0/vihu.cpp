@@ -8,6 +8,10 @@ Vihu::Vihu(std::string nimi,int hela,int isku,std::string aHut)
 	this->Attack = isku;
 	this->hut = aHut;
 }
+Vihu::~Vihu()
+{
+	std::cout << Name << " kuoli!" << std::endl;
+}
 void Vihu::setHealth(int hela)
 {
 	this->Health = hela;

@@ -1,17 +1,3 @@
-
-//#include <iostream>
-//#include <vector>
-//#include <thread>
-//#include <mutex>
-//#include <condition_variable>
-//#include <conio.h>                      //t‰‰lt‰ _getch
-//#include <string>
-//#include <cstdlib>
-//#include <ctime>                        //k‰ytet‰‰n randissa
-//#include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
-//#include <chrono>
-//#include <unordered_map>
-
 #include "Player.h"
 #include "javihu.h"
 #include "mapping.h"
@@ -111,12 +97,14 @@ void mapping::printPlayMap(Player& plr)
         playMap[locy][locx] = 'X';
         printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
+        std::cout << "tapot yht: " << counter << std::endl;
         if (checkForEnemy(locy,locx))
         {
-            //system("cls");
+            //system("cls");                                                //joko n‰m‰ system(cls) tai vihu/javihu destructorit aiheuttaa h‰mminki‰
             enemyKillCoords.push_back(std::make_pair(locy,locx));
             enemyKillName.push_back(combat(plr));
-            system("cls");
+            counter += 1;
+            //system("cls");
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
         }
@@ -130,8 +118,8 @@ void mapping::printPlayMap(Player& plr)
             mapSize();
         }
         inputReady = false;
-        cond.notify_one();
     }
+    cond.notify_one();
 }
 
 std::string mapping::combat(Player& plr)
@@ -170,11 +158,11 @@ void mapping::printKillStats()
     for (int i = 0; i < enemyKillName.size(); i++)
     {
         std::cout << enemyKillName[i] << std::endl;
-        enemyKills[enemyKillName[i]]++;
+        enemyKillCounter[enemyKillName[i]]++;
     }
     enemyKillName.clear();                              // tarvii tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
     std::cout << "kaikki tuhotut: \n" << std::endl;
-    for (auto j : enemyKills)
+    for (auto j : enemyKillCounter)
     {
         std::cout << j.first << " " << j.second << std::endl;
     }

@@ -13,7 +13,6 @@
 
 using namespace csv;
 
-
 int main()
 {
     mapping map;

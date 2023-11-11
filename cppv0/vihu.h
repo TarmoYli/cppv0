@@ -9,7 +9,7 @@ class Vihu
 {
 public:
 	Vihu(std::string name, int hela, int isku, std::string aHut);
-
+	~Vihu();
 	virtual void huuto() = 0;
 	void setHealth(int hela);
 	void setAttack(int isku);
