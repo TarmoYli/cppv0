@@ -1,28 +1,42 @@
 #include "Player.h"
 
-Player::Player(int aHealth, int aAttack, int aParry, int aExp, std::string aName)
+Player::Player(int aHealth, int aAttack, int aParry, int aExp)
 {
 	this->Health = aHealth;
 	this->Attack = aAttack;
 	this->Parry = aParry;
 	this->Exp = aExp;
-	this->Name = aName;
+}
+Player::~Player()
+{
+	std::cout << Name << "Kuoli!" << "XP: " << Exp << "\nGame Over!" << std::endl;
 }
 void Player::setHealth(int sHealth)
 {
 	this->Health = sHealth;
 }
+
 void Player::setAttack(int sAttack)
 {
 	this->Attack = sAttack;
 }
+
 void Player::setExp(int sExp)
 {
 	this->Exp = sExp;
 }
+
 void Player::setParry(int sParry)
 {
 	this->Parry = sParry;
+}
+
+void Player::setName()
+{
+	std::string plrName;
+	std::cout << "Anna pelaajan nimi: " << std::endl;
+	std::cin >> plrName;
+	this->Name = plrName;
 }
 
 int Player::getHealth()

@@ -6,19 +6,22 @@
 #include <thread>
 #include <set>
 #include <utility>
+#include "Player.h"
 #include "csv.h"
 #include "mapping.h"
 #include "javihu.h"
 
-using namespace mapping;
 using namespace csv;
 
 
 int main()
 {
-    mapping::mapSize();
-    std::thread mapMove(mapping::userInput);
-    std::thread mapPrinter(mapping::printPlayMap);
+    mapping map;
+    Player plr(50, 5, 3, 0);
+    plr.setName();
+    map.mapSize();
+    std::thread mapMove([&map]() {map.userInput();});
+    std::thread mapPrinter([&map]() {map.printPlayMap();});
 
     mapMove.join();
     mapPrinter.join();

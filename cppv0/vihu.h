@@ -3,7 +3,7 @@
 #define VIHU
 
 #include <string>
-
+#include <iostream>
 
 class Vihu
 {

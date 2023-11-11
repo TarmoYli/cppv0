@@ -11,5 +11,4 @@ public:
 	void huuto();
 };
 
-
 #endif // !JAVIHU

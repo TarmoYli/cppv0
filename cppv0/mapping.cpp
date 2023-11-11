@@ -1,17 +1,18 @@
 
-#include <iostream>
-#include <vector>
-#include <thread>
-#include <mutex>
-#include <condition_variable>
-#include <conio.h>                      //t‰‰lt‰ _getch
-#include <string>
-#include <cstdlib>
-#include <ctime>                        //k‰ytet‰‰n randissa
-#include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
-#include <chrono>
-#include <unordered_map>
+//#include <iostream>
+//#include <vector>
+//#include <thread>
+//#include <mutex>
+//#include <condition_variable>
+//#include <conio.h>                      //t‰‰lt‰ _getch
+//#include <string>
+//#include <cstdlib>
+//#include <ctime>                        //k‰ytet‰‰n randissa
+//#include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
+//#include <chrono>
+//#include <unordered_map>
 
+#include "Player.h"
 #include "javihu.h"
 #include "mapping.h"
 #include "csv.h"
@@ -19,18 +20,7 @@
 std::mutex mtx;
 std::condition_variable cond;
 
-bool inputReady = false;                 //n‰iden muuttujien n‰kyvyyksien tarvinee olla laajempia joten alustetaan t‰ss‰.
-bool isRunning = true;                   //(muista lis‰t‰ vihollisen kohtaaminen) -> (on varmaan ehk‰ toimiva nyt) -> onkin, eli nyt vaan se itse taistelu eli plr class mukaan
-int locx = 0;                            //lokaatio x   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
-int locy = 0;                            //lokaatio y   n‰ist‰ koordeista l‰hdet‰‰n liikkeelle
-int xForMap;                             //kuinka monta alkiota (#) per vektori eli x-akseli
-int yForMap;                             //kuinka monta vektoria vektorissa eli y-akseli
-
-std::set<std::pair<int, int>> enemyCoords;          // k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
-std::vector<std::pair<int, int>> enemyKillCoords;   // t‰m‰n voinee poistaa ellei sit‰ sitten halua k‰ytt‰‰ joka mapin j‰lkeen ett‰ miss‰ mik‰kin tapettiin... kaipa se on yksi toiminnallisuus sekin.
-std::vector<std::string> enemyKillName;
-std::unordered_map<std::string, int> enemyKills;    // nimet on uniikkeja (keys), m‰‰r‰t inttej‰ (values)
-std::vector<std::vector<char>> playMap;
+mapping::mapping() {};
 
 void mapping::mapSize()
 {
@@ -68,7 +58,7 @@ std::vector<std::vector<char>> mapping::userInput()
         ch = _getch();                                // ennen getchi‰ ehk‰ printtaa kartan jotta getch tulee vasta printin j‰lkeen eik‰ odota inputtia
         {
             std::unique_lock<std::mutex> lock(mtx);
-            cond.wait(lock, [] { return !inputReady; });
+            cond.wait(lock, [&] { return !inputReady; });
             playMap[locy][locx] = 'O';
             if (ch == 'w')
             {
@@ -116,7 +106,7 @@ void mapping::printPlayMap()
     while (isRunning)
     {    
         std::unique_lock<std::mutex> lock(mtx);
-        cond.wait(lock, [] { return inputReady; });
+        cond.wait(lock, [&] { return inputReady; });
         system("cls");
         playMap[locy][locx] = 'X';
         printMap(playMap);
@@ -149,24 +139,7 @@ std::string mapping::combat()
     JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
     std::cout << "\nNimi: " << normi.getName() << "\nhˆˆki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
     normi.huuto();
-    //char testi;                                                             // t‰st‰ asti poistoon kaikki
-    //std::cout << "\nT‰h‰n joku juttu koita vaikka aa: " << std::endl;       
-    //std::cin >> testi;
-    //switch (testi)                                                          // poista t‰m‰ koko switch case testi
-    //{
-    //case 'a':
-    //    std::cout << "se oli A" << std::endl;
-    //    std::this_thread::sleep_for(std::chrono::seconds(2));               // Poista n‰m‰ sleepit ja <chrono> jos ei k‰ytet‰.
-    //    break;
-    //case 'b':
-    //    std::cout << "se oli B" << std::endl;
-    //    std::this_thread::sleep_for(std::chrono::seconds(2));
-    //    break;
-    //default:
-    //    std::cout << "se oli joku muu kuin a tai b" << std::endl;
-    //    std::this_thread::sleep_for(std::chrono::seconds(2));
-    //    break;
-    //}
+    
     return normi.getName();
 }
 
@@ -212,11 +185,11 @@ bool mapping::checkMap()                                // jotta toimii if-lause
     bool mapHit = true;
     for (const std::vector<char>& row : playMap)
     {
-        //mapHit = std::find(row.begin(), row.end(), target) == row.end(); t‰m‰ ei toimi loopissa
+        //mapHit = std::find(row.begin(), row.end(), target) == row.end();  <-- t‰m‰ ei toimi t‰ss‰ loopissa tarvittavalla tavalla
         
-        if (std::find(row.begin(), row.end(), target) != row.end())
-        {
-            mapHit = false;
+        if (std::find(row.begin(), row.end(), target) != row.end())     // t‰t‰ ei saa suoraviivaistettua laittamalla
+        {                                                               // maphit = false; == row.end(); maphit = true;
+            mapHit = false;                                             // t‰m‰ on luultavasti ainut keino t‰ss‰tapauksessa saada t‰m‰ oikein.
             break;
         }
     }

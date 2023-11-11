@@ -1,8 +1,5 @@
 #include "javihu.h"
 
-#include <string>
-#include <iostream>
-
 
 JaVihu::JaVihu(std::string aName, int aHela, int aIsku, std::string aHut):Vihu(aName,aHela,aIsku,aHut)
 {

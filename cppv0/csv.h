@@ -3,7 +3,12 @@
 #define CSV
 
 #include <string>
-
+#include <iostream>
+#include <vector>
+#include <string>
+#include <fstream>
+#include <cstdlib>
+#include <time.h>
 
 namespace csv
 {

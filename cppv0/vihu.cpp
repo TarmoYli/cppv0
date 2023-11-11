@@ -1,7 +1,5 @@
 #include "vihu.h"
 
-#include <string>
-
 
 Vihu::Vihu(std::string nimi,int hela,int isku,std::string aHut)
 {
