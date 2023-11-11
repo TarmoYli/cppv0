@@ -7,7 +7,7 @@
 class JaVihu :public Vihu
 {
 public:
-	JaVihu(std::string name, int hela, int isku, std::string aHut);
+	JaVihu(std::string aName, int aHealth, int aAttack, std::string aHut,int aExp);
 	void huuto();
 };
 

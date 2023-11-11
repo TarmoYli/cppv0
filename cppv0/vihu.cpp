@@ -1,24 +1,25 @@
 #include "vihu.h"
 
 
-Vihu::Vihu(std::string nimi,int hela,int isku,std::string aHut)
+Vihu::Vihu(std::string aName,int aHealth,int aAttack,std::string aHut,int aExp)
 {
-	this->Name = nimi;
-	this->Health = hela;
-	this->Attack = isku;
+	this->Name = aName;
+	this->Health = aHealth;
+	this->Attack = aAttack;
 	this->hut = aHut;
+	this->Exp = aExp;
 }
 Vihu::~Vihu()
 {
 	std::cout << Name << " kuoli!" << std::endl;
 }
-void Vihu::setHealth(int hela)
+void Vihu::setHealth(int sHealth)
 {
-	this->Health = hela;
+	this->Health = sHealth;
 }
-void Vihu::setAttack(int isku)
+void Vihu::setAttack(int sAttack)
 {
-	this->Attack = isku;
+	this->Attack = sAttack;
 }
 int Vihu::getHealth()
 {
@@ -27,6 +28,10 @@ int Vihu::getHealth()
 int Vihu::getAttack()
 {
 	return Attack;
+}
+int Vihu::getExp()
+{
+	return Exp;
 }
 std::string Vihu::getName()
 {

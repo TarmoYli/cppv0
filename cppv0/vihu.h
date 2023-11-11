@@ -8,18 +8,20 @@
 class Vihu
 {
 public:
-	Vihu(std::string name, int hela, int isku, std::string aHut);
+	Vihu(std::string aName, int ahealth, int aAttack, std::string aHut,int aExp);
 	~Vihu();
 	virtual void huuto() = 0;
-	void setHealth(int hela);
-	void setAttack(int isku);
+	void setHealth(int sHealth);
+	void setAttack(int sAttack);
 	int getHealth();
 	int getAttack();
+	int getExp();
 	std::string getName();
 
 protected:
 	int Health;
 	int Attack;
+	int Exp;
 	std::string Name;
 	std::string hut;
 };

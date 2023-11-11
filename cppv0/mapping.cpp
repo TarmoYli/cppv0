@@ -44,7 +44,7 @@ std::vector<std::vector<char>> mapping::userInput()
         ch = _getch();                                // ennen getchiä ehkä printtaa kartan jotta getch tulee vasta printin jälkeen eikä odota inputtia
         {
             std::unique_lock<std::mutex> lock(mtx);
-            cond.wait(lock, [&] { return !inputReady; });
+            cond.wait(lock, [&] { return !inputReady; });       // odottaa että inputready on false
             playMap[locy][locx] = 'O';
             if (ch == 'w')
             {
@@ -78,7 +78,6 @@ std::vector<std::vector<char>> mapping::userInput()
             {
                 isRunning = false;
             }
-
             inputReady = true;
         }
         cond.notify_one();
@@ -107,6 +106,7 @@ void mapping::printPlayMap(Player& plr)
             //system("cls");
             printMap(playMap);
             std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
+            std::cout << "tapot yht: " << counter << std::endl;
         }
         if (checkMap())
         {
@@ -124,7 +124,7 @@ void mapping::printPlayMap(Player& plr)
 
 std::string mapping::combat(Player& plr)
 {    
-    JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh");
+    JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh",5);
     std::cout << "\nNimi: " << normi.getName() << "\nhööki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
     normi.huuto();
     std::cout << plr.getName() << " taistelisi tässä" << std::endl;
