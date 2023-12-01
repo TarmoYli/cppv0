@@ -5,7 +5,9 @@
 
 std::mutex mtx;
 std::condition_variable cond;
-
+                                                                                    // HUOM! jos viimeisess‰ ruudussa on taistelu ja sen h‰vi‰‰,
+                                                                                    // peli pyyt‰‰ k‰ytt‰j‰lt‰ viel‰ koordeja uuden kartan tekoon.
+                                                                                    // eli Fix It! joskus.
 mapping::mapping() {};
 
 void mapping::mapSize()
@@ -99,7 +101,7 @@ void mapping::printPlayMap(Player& plr)
         std::cout << "tapot yht: " << counter << std::endl;
         if (checkForEnemy(locy,locx))
         {
-            //system("cls");                                                //joko n‰m‰ system(cls) jutut taitaa aiheuttaa h‰mminki‰
+            //system("cls");                                                //n‰m‰ system(cls) jutut saattavat aiheuttaa h‰mminki‰
             enemyKillCoords.push_back(std::make_pair(locy,locx));
             enemyKillName.push_back(combat(plr));
             counter += 1;
@@ -133,7 +135,7 @@ std::string mapping::combat(Player& plr)
     int enemyAttackValue = tier_1.getAttack();
     do
     {
-        int plrHitvalue = plrAttackValue + rand() % 10+1;
+        int plrHitvalue = plrAttackValue + rand() % 10+1;                                               // pelaaja lyˆ vihua
         std::cout << plr.getName() << " lyˆ: " << plrHitvalue << std::endl;
         int newEnemyHealthValue = tier_1.getHealth() - plrHitvalue;
         tier_1.setHealth(newEnemyHealthValue);
@@ -144,24 +146,26 @@ std::string mapping::combat(Player& plr)
             std::cout << tier_1.getName() << " voitettu! GG!" << std::endl;
             int xpIncrease = plr.getExp() + tier_1.getExp();
             plr.setExp(xpIncrease);
-
             break;
         }
-        int enemyHitValue = enemyAttackValue += rand() % 6+1;
+        int enemyHitValue = enemyAttackValue + rand() % 6+1;                                            // vihu lyˆ pelaajaa
         std::cout << tier_1.getName() << " lyˆ: " << enemyHitValue << std::endl;
-        int newPlrHealthValue = plr.getHealth() - enemyHitValue;
-        plr.setHealth(newPlrHealthValue);
+        if (plr.getParry() >= enemyHitValue)  { enemyHitValue = 0; }                                    // if-else parryn laskemiseen
+        else {
+            int newPlrHealthValue = plr.getHealth() - (enemyHitValue - plr.getParry());
+            plr.setHealth(newPlrHealthValue);
+        }
         std::cout << plr.getName() << " el‰m‰‰ j‰ljell‰ " << plr.getHealth() << std::endl;
         std::cin.get();
         if (plr.getHealth() <= 0)
         {
             std::cout << tier_1.getName() << " Tappoi sinut!" << std::endl;
             std::cout << plr.getName() << " Kuoli!" << " XP: " << plr.getExp() << "\nGame Over Bro!" << std::endl;
+            csv::saveStats(plr.getName(), plr.getExp());
             isRunning = false;
         }
 
     } while (plr.getHealth() > 0 && tier_1.getHealth() > 0);
-
 
     return tier_1.getName();
 }

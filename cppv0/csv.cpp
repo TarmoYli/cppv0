@@ -24,7 +24,9 @@ std::string csv::getEnemyName()
 	return eName;
 }
 
-std::string csv::setRecord()
+void csv::saveStats(std::string name, int xp)
 {
-	return std::string();
+	std::fstream fout;
+	fout.open("statistics.csv", std::ios::app);
+	fout << name << ';' << xp << '\n';
 }

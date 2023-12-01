@@ -13,7 +13,7 @@
 namespace csv
 {
 	std::string getEnemyName();
-	std::string setRecord();
+	void saveStats(std::string name, int xp);
 }
 
 #endif // !CSV

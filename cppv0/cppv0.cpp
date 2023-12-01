@@ -16,7 +16,7 @@ using namespace csv;
 int main()
 {
     mapping map;
-    Player plr(100, 0, 3, 0);
+    Player plr(100, 0, 5, 0);
     plr.setName();
     map.mapSize();
     std::thread mapMove([&map]() {map.userInput();});
