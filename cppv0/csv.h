@@ -16,5 +16,4 @@ namespace csv
 	std::string setRecord();
 }
 
-
 #endif // !CSV

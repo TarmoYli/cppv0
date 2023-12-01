@@ -129,17 +129,17 @@
   <ItemGroup>
     <ClCompile Include="cppv0.cpp" />
     <ClCompile Include="csv.cpp" />
-    <ClCompile Include="javihu.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="mapping.cpp" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="vihu.cpp" />
+    <ClCompile Include="iEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="csv.h" />
-    <ClInclude Include="javihu.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="mapping.h" />
     <ClInclude Include="Player.h" />
-    <ClInclude Include="vihu.h" />
+    <ClInclude Include="iEnemy.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

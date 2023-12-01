@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "javihu.h"
+#include "enemy.h"
 #include "mapping.h"
 #include "csv.h"
 
@@ -21,7 +21,7 @@ void mapping::mapSize()
 
 void mapping::setEnemyLocation(std::set<std::pair<int,int>> &enemyCoords)           // suoritettava ennen checkForEnemy() funktiota.
 {
-    int Amount = round(sqrt(yForMap * xForMap));
+    int Amount = round(sqrt(yForMap * xForMap));                                    // vihollisten m‰‰r‰
     srand(time(0));
     std::pair<int, int> crds;
     while (enemyCoords.size() != Amount)                                            // toistetaan kunnes .size on sama kuin Amount.      
@@ -40,11 +40,11 @@ std::vector<std::vector<char>> mapping::userInput()
 
     while (isRunning) // jos "isRunning = false" lopettaa threadin.
     {
-        std::cout << "liiku w,a,s,d paina enter aloittaaksesi ('q' lopettaa ohjelman):";
-        ch = _getch();                                // ennen getchi‰ ehk‰ printtaa kartan jotta getch tulee vasta printin j‰lkeen eik‰ odota inputtia
+        std::cout << "liiku w,a,s,d. paina enter aloittaaksesi ('q' lopettaa ohjelman):";
+        ch = _getch();                                                  // ennen getchi‰ ehk‰ printtaa kartan?
         {
             std::unique_lock<std::mutex> lock(mtx);
-            cond.wait(lock, [&] { return !inputReady; });       // odottaa ett‰ inputready on false
+            cond.wait(lock, [&] { return !inputReady; });               // odottaa ett‰ inputready on false
             playMap[locy][locx] = 'O';
             if (ch == 'w')
             {
@@ -74,7 +74,7 @@ std::vector<std::vector<char>> mapping::userInput()
                     locx = 0;
                 playMap[locy][locx] = 'O';
             }
-            else if (ch == 'q')
+            else if (ch == 'q')                                         // Q lopettaa loopin -> ohjelman
             {
                 isRunning = false;
             }
@@ -93,20 +93,20 @@ void mapping::printPlayMap(Player& plr)
         std::unique_lock<std::mutex> lock(mtx);
         cond.wait(lock, [&] { return inputReady; });
         system("cls");
-        playMap[locy][locx] = 'X';
+        playMap[locy][locx] = 'X';                                         // ei tallenna 'X' mihink‰‰n
         printMap(playMap);
         std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
         std::cout << "tapot yht: " << counter << std::endl;
         if (checkForEnemy(locy,locx))
         {
-            //system("cls");                                                //joko n‰m‰ system(cls) tai vihu/javihu destructorit aiheuttaa h‰mminki‰
+            //system("cls");                                                //joko n‰m‰ system(cls) jutut taitaa aiheuttaa h‰mminki‰
             enemyKillCoords.push_back(std::make_pair(locy,locx));
             enemyKillName.push_back(combat(plr));
             counter += 1;
             //system("cls");
-            printMap(playMap);
-            std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
-            std::cout << "tapot yht: " << counter << std::endl;
+            //printMap(playMap);
+            //std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
+            //std::cout << "tapot yht: " << counter << std::endl;
         }
         if (checkMap())
         {
@@ -123,13 +123,47 @@ void mapping::printPlayMap(Player& plr)
 }
 
 std::string mapping::combat(Player& plr)
-{    
-    JaVihu normi = JaVihu(csv::getEnemyName(), 20, 5, "hauhahuh",5);
-    std::cout << "\nNimi: " << normi.getName() << "\nhˆˆki: " << normi.getAttack() << "\nhealth: " << normi.getHealth() << std::endl;
-    normi.huuto();
-    std::cout << plr.getName() << " taistelisi t‰ss‰" << std::endl;
-    std::cin.get();
-    return normi.getName();
+{
+    std::cout << "taistelu!" << std::endl;
+    enemy tier_1 = enemy(csv::getEnemyName(), 0, 0, "hauhauhau", 0);
+    tier_1.makeStats();
+    std::cout << "\nNimi: " << tier_1.getName() << "\nhealth: " << tier_1.getHealth() << "\nattack: " << tier_1.getAttack() << "\nXP value: " << tier_1.getExp() << std::endl;
+    tier_1.huuto();
+    int plrAttackValue = plr.getAttack();
+    int enemyAttackValue = tier_1.getAttack();
+    do
+    {
+        int plrHitvalue = plrAttackValue + rand() % 10+1;
+        std::cout << plr.getName() << " lyˆ: " << plrHitvalue << std::endl;
+        int newEnemyHealthValue = tier_1.getHealth() - plrHitvalue;
+        tier_1.setHealth(newEnemyHealthValue);
+        std::cout << tier_1.getName() << " el‰m‰‰ j‰ljell‰: "<< tier_1.getHealth() << std::endl;
+        std::cin.get();
+        if (tier_1.getHealth() <= 0)
+        {
+            std::cout << tier_1.getName() << " voitettu! GG!" << std::endl;
+            int xpIncrease = plr.getExp() + tier_1.getExp();
+            plr.setExp(xpIncrease);
+
+            break;
+        }
+        int enemyHitValue = enemyAttackValue += rand() % 6+1;
+        std::cout << tier_1.getName() << " lyˆ: " << enemyHitValue << std::endl;
+        int newPlrHealthValue = plr.getHealth() - enemyHitValue;
+        plr.setHealth(newPlrHealthValue);
+        std::cout << plr.getName() << " el‰m‰‰ j‰ljell‰ " << plr.getHealth() << std::endl;
+        std::cin.get();
+        if (plr.getHealth() <= 0)
+        {
+            std::cout << tier_1.getName() << " Tappoi sinut!" << std::endl;
+            std::cout << plr.getName() << " Kuoli!" << " XP: " << plr.getExp() << "\nGame Over Bro!" << std::endl;
+            isRunning = false;
+        }
+
+    } while (plr.getHealth() > 0 && tier_1.getHealth() > 0);
+
+
+    return tier_1.getName();
 }
 
 bool mapping::checkForEnemy(int locy, int locx)
@@ -160,7 +194,7 @@ void mapping::printKillStats()
         std::cout << enemyKillName[i] << std::endl;
         enemyKillCounter[enemyKillName[i]]++;
     }
-    enemyKillName.clear();                              // tarvii tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
+    enemyKillName.clear();                              // tarvinee tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
     std::cout << "kaikki tuhotut: \n" << std::endl;
     for (auto j : enemyKillCounter)
     {

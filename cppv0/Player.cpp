@@ -7,10 +7,7 @@ Player::Player(int aHealth, int aAttack, int aParry, int aExp)
 	this->Parry = aParry;
 	this->Exp = aExp;
 }
-Player::~Player()
-{
-	std::cout << Name << "Kuoli!" << "XP: " << Exp << "\nGame Over!" << std::endl;
-}
+Player::~Player(){}
 void Player::setHealth(int sHealth)
 {
 	this->Health = sHealth;
@@ -37,6 +34,14 @@ void Player::setName()
 	std::cout << "Anna pelaajan nimi: " << std::endl;
 	std::cin >> plrName;
 	this->Name = plrName;
+}
+
+void Player::showStatus()
+{
+	std::cout << Name << std::endl;
+	std::cout << "Health: " << Health << std::endl;
+	std::cout << "Attack: " << Attack << std::endl;
+	std::cout << "XP: " << Exp << std::endl;
 }
 
 int Player::getHealth()

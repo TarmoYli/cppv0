@@ -1,16 +1,17 @@
 #pragma once
-#ifndef VIHU
-#define VIHU
+#ifndef IENEMY
+#define IENEMY
 
 #include <string>
 #include <iostream>
 
-class Vihu
+class iEnemy
 {
 public:
-	Vihu(std::string aName, int ahealth, int aAttack, std::string aHut,int aExp);
-	~Vihu();
+	iEnemy(std::string aName, int ahealth, int aAttack, std::string aHut,int aExp);
+	~iEnemy();
 	virtual void huuto() = 0;
+	void makeStats();
 	void setHealth(int sHealth);
 	void setAttack(int sAttack);
 	int getHealth();
@@ -25,4 +26,4 @@ protected:
 	std::string Name;
 	std::string hut;
 };
-#endif // !VIHU
+#endif // !IENEMY

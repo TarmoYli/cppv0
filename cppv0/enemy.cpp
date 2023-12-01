@@ -1,7 +1,7 @@
-#include "javihu.h"
+#include "enemy.h"
 
 
-JaVihu::JaVihu(std::string aName, int aHealth, int aAttack, std::string aHut,int aExp):Vihu(aName,aHealth,aAttack,aHut,aExp)
+enemy::enemy(std::string aName, int aHealth, int aAttack, std::string aHut,int aExp):iEnemy(aName,aHealth,aAttack,aHut,aExp)
 {
 	this->Name = aName;
 	this->Health = aHealth;
@@ -10,7 +10,7 @@ JaVihu::JaVihu(std::string aName, int aHealth, int aAttack, std::string aHut,int
 	this->Exp = aExp;
 }
 
-void JaVihu::huuto()
+void enemy::huuto()
 {
 	std::cout << Name + " huutaa " + hut << std::endl;
 }

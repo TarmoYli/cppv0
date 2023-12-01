@@ -18,10 +18,10 @@
     <ClCompile Include="cppv0.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vihu.cpp">
+    <ClCompile Include="iEnemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="javihu.cpp">
+    <ClCompile Include="enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="csv.cpp">
@@ -35,10 +35,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vihu.h">
+    <ClInclude Include="iEnemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="javihu.h">
+    <ClInclude Include="enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="csv.h">

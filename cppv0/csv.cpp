@@ -15,7 +15,6 @@ std::string csv::getEnemyName()
 		std::getline(allAnim, nimi, ';');
 		eNames.push_back(nimi);
 	}
-
 	srand(time(0));
 	int eNameCsvCap = eNames.capacity();
 	int eNameCsvIndex = rand() % eNameCsvCap;

@@ -12,7 +12,7 @@
 #include <cstdlib>
 #include <ctime>                        //k‰ytet‰‰n randissa
 #include <set>                          //koska halutaan uniikkeja arvoja kokoelmaan t‰m‰ tekee sen mukavasti
-#include <chrono>						//luultavasti poistoon kun ei ole tarvetta.
+#include <chrono>						//luultavasti poistoon koska ei ole tarvetta.
 #include <unordered_map>				//Key,Value lista.
 
 
@@ -30,7 +30,7 @@ public:
 	void printKillStats();
 	bool checkMap();
 	
-protected:													// jostain syyst‰ herjaa jos n‰m‰ j‰tt‰‰ ilman arvoa.
+protected:													//herjaa jos n‰m‰ j‰tt‰‰ ilman arvoa siksi nollat  placeholderina.
 	bool inputReady = false;							
 	bool isRunning = true;								
 	int locx = 0;											//lokaatio x n‰ist‰ koordeista l‰hdet‰‰n liikkeelle

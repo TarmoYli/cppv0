@@ -15,6 +15,7 @@ public:
 	void setExp(int sExp);
 	void setParry(int sParry);
 	void setName();
+	void showStatus();
 	int getHealth();
 	int getAttack();
 	int getParry();
