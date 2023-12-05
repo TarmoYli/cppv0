@@ -11,7 +11,10 @@ iEnemy::iEnemy(std::string aName,int aHealth,int aAttack,std::string aHut,int aE
 	this->Exp = aExp;
 }
 iEnemy::~iEnemy(){}
-
+																// header tiedostossa on void huuto pure virtualina
+																// tässä .cpp tiedostossa ko. metodia ei ole ollenkaan
+																// homma silti toimii niinkuin pitääkin eli perivä luokka pakotetaan sitä käyttämään.
+																// ts. jos haluaa tehdä ns.interfacen niin olisi varmaan parempi että kaikki metodit olisivat pure virtual jotta ne olisi pakko ottaa mukaan periviin luokkiin.
 void iEnemy::makeStats()
 {
 	srand(time(0));												// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
