@@ -4,6 +4,8 @@
 
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <time.h>
 
 class iEnemy
 {

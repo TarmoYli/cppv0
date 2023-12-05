@@ -32,7 +32,7 @@ public:
 	void printKillStats();
 	bool checkMap();
 	
-protected:													//herjaa jos n‰m‰ j‰tt‰‰ ilman arvoa siksi nollat  placeholderina.
+protected:													//herjaa jos n‰m‰ j‰tt‰‰ ilman arvoa siksi nollat placeholderina.
 	bool inputReady = false;							
 	bool isRunning = true;								
 	int locx = 0;											//lokaatio x n‰ist‰ koordeista l‰hdet‰‰n liikkeelle

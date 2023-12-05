@@ -1,7 +1,6 @@
 #include "enemyBoss.h"
 
 
-
 enemyBoss::enemyBoss(std::string aName, int aHealth, int aAttack, std::string aHut, int aExp):iEnemy(aName,aHealth,aAttack,aHut,aExp)
 {
 	this->Name = aName;
@@ -13,19 +12,19 @@ enemyBoss::enemyBoss(std::string aName, int aHealth, int aAttack, std::string aH
 
 void enemyBoss::huuto()
 {
-	std::cout << "ISO PAHA" << Name + " huutaa " + hut << std::endl;
+	std::cout << "ISO PAHA " << Name + " huutaa " + hut << std::endl;
 }
-void enemyBoss::makeStats(int scaling)
+void enemyBoss::makeStats(int scaling)												// ottaa skaalautuvan arvon. 
 {
 	int scaleValue = scaling;
 	srand(time(0));
-	Health = (rand() % 6 + (5+scaleValue)) * 10;
+	Health = (rand() % 6 + (5+scaleValue)) * 10;									// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
 	Attack = Health / 10 / 2 + (1+scaleValue);
 	Exp = Health / 10;
 }
 
 std::string enemyBoss::getName()
 {
-	std::string etuliite = "ISO PAHA";
-	return etuliite+" "+Name;
+	std::string preFix = "ISO PAHA";
+	return preFix+" "+Name;
 }

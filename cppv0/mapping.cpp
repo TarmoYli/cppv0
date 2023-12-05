@@ -6,7 +6,7 @@
 
 std::mutex mtx;
 std::condition_variable cond;
-                                                                                    // HUOM! jos viimeisessä ruudussa on taistelu ja sen häviää,
+                                                                                    // HUOM! jos viimeisessä ruudussa on taistelu ja jos sen häviää,
                                                                                     // peli pyytää käyttäjältä vielä koordeja uuden kartan tekoon.
                                                                                     // eli Fix It! joskus. ehkä.
 mapping::mapping() {};
@@ -152,7 +152,7 @@ std::string mapping::combat(Player& plr)
             plr.setExp(xpIncrease);
             break;
         }
-        int enemyHitValue = enemyAttackValue + rand() % 6+1;                                            // vihu lyö pelaajaa
+        int enemyHitValue = enemyAttackValue + rand() % 6+1;                                                                                               // vihu lyö pelaajaa
         std::cout << tier_1.getName() << " lyö: " << enemyHitValue << std::endl;
         if (plr.getParry() >= enemyHitValue) { std::cout << "Torjuit iskun kokonaan!"<< std::endl; enemyHitValue = 0; }                                    // if-else parryn laskemiseen
         else {
@@ -232,11 +232,11 @@ std::string mapping::bossFight(Player& plr)
     bous.makeStats(bossScaling);
     std::cout << "\nNimi: " << bous.getName() << "\nhealth: " << bous.getHealth() << "\nattack: " << bous.getAttack() << "\nXP value: " << bous.getExp() << std::endl;
     bous.huuto();
-    int plrAttackValue = plr.getAttack();
-    int enemyAttackValue = bous.getAttack();
-    do
-    {
-        int plrHitvalue = plrAttackValue + rand() % 10 + 1;                                               // pelaaja lyö vihua
+    int plrAttackValue = plr.getAttack();                                                           // nämä muuttujat
+    int enemyAttackValue = bous.getAttack();                                                        // ovat turhia.
+    do                                                                                              // koska voin suoraan käyttää getAttack():ia. tyyliin:
+    {                                                                                               // "int plrHitvalue = plr.getAttack() + rand() % 10 + 1;"
+        int plrHitvalue = plrAttackValue + rand() % 10 + 1;
         std::cout << plr.getName() << " lyö: " << plrHitvalue << std::endl;
         int newEnemyHealthValue = bous.getHealth() - plrHitvalue;
         bous.setHealth(newEnemyHealthValue);
@@ -254,9 +254,9 @@ std::string mapping::bossFight(Player& plr)
             std::cin.get();
             break;
         }
-        int enemyHitValue = enemyAttackValue + rand() % 6 + 1;                                            // vihu lyö pelaajaa
+        int enemyHitValue = enemyAttackValue + rand() % 6 + 1;                                                                                                 // boussi lyö pelaajaa
         std::cout << bous.getName() << " lyö: " << enemyHitValue << std::endl;
-        if (plr.getParry() >= enemyHitValue) { enemyHitValue = 0; }                                       // if-else parryn laskemiseen... if lauseen bodyssä ehv=0 on aikalailla turha.
+        if (plr.getParry() >= enemyHitValue) { std::cout << "Torjuit iskun kokonaan!" << std::endl; enemyHitValue = 0; }                                       // if-else parryn laskemiseen... if lauseen bodyssä ehv=0 on aikalailla turha.
         else {
             int newPlrHealthValue = plr.getHealth() - (enemyHitValue - plr.getParry());
             plr.setHealth(newPlrHealthValue);

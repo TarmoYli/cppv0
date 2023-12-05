@@ -1,5 +1,7 @@
 #include "iEnemy.h"
 
+//enemy statit luodaan makeStats(funktiolla) konstruktoriin syötetään oletuksena nollat.
+
 iEnemy::iEnemy(std::string aName,int aHealth,int aAttack,std::string aHut,int aExp)
 {
 	this->Name = aName;
@@ -12,7 +14,7 @@ iEnemy::~iEnemy(){}
 
 void iEnemy::makeStats()
 {
-	srand(time(0));
+	srand(time(0));												// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
 	Health = rand() % 6 * 10;
 	Attack = Health / 10 / 2;
 	Exp = Health / 10;
