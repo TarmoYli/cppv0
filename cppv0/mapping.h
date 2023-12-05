@@ -22,8 +22,10 @@ public:
 	mapping();
 	void mapSize();
 	std::vector<std::vector<char>> userInput();
-	void printPlayMap(Player& plr);
 	std::string combat(Player& plr);
+	std::string bossFight(Player& plr);
+	void bossRewards(Player& plr);
+	void printPlayMap(Player& plr);
 	bool checkForEnemy(int y, int x);
 	void printMap(std::vector<std::vector<char>>& playMap);
 	void setEnemyLocation(std::set<std::pair<int, int>>& enemyCoords);
@@ -38,6 +40,7 @@ protected:													//herjaa jos n‰m‰ j‰tt‰‰ ilman arvoa siksi nollat  placeh
 	int xForMap = 0;										//kuinka monta alkiota (#) per vektori eli x-akseli
 	int yForMap = 0;										//kuinka monta vektoria vektorissa eli y-akseli
 	int counter = 0;
+	int bossScaling = 0;
 	std::set<std::pair<int, int>> enemyCoords;				// k‰ytet‰‰n setti‰ koska se voi sis‰lt‰‰ VAIN uniikkeja arvoja ja me emme halua t‰h‰n duplikaatteja.
 	std::vector<std::pair<int, int>> enemyKillCoords;		// t‰m‰n voinee poistaa ellei sit‰ sitten halua k‰ytt‰‰ joka mapin j‰lkeen ett‰ miss‰ mik‰kin tapettiin... kaipa se on yksi toiminnallisuus sekin.
 	std::vector<std::string> enemyKillName;					// joka kartan j‰lkeen tulostetaan, siirret‰‰n enemyKillCounter mappiin ja tyhjennet‰‰n.

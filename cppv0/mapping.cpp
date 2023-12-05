@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "enemy.h"
+#include "enemyBoss.h"
 #include "mapping.h"
 #include "csv.h"
 
@@ -7,7 +8,7 @@ std::mutex mtx;
 std::condition_variable cond;
                                                                                     // HUOM! jos viimeisess‰ ruudussa on taistelu ja sen h‰vi‰‰,
                                                                                     // peli pyyt‰‰ k‰ytt‰j‰lt‰ viel‰ koordeja uuden kartan tekoon.
-                                                                                    // eli Fix It! joskus.
+                                                                                    // eli Fix It! joskus. ehk‰.
 mapping::mapping() {};
 
 void mapping::mapSize()
@@ -78,6 +79,7 @@ std::vector<std::vector<char>> mapping::userInput()
             }
             else if (ch == 'q')                                         // Q lopettaa loopin -> ohjelman
             {
+                
                 isRunning = false;
             }
             inputReady = true;
@@ -112,7 +114,9 @@ void mapping::printPlayMap(Player& plr)
         }
         if (checkMap())
         {
-            std::cout << "kartta l‰p‰isty." << std::endl;
+            std::cout << "kartta l‰p‰isty. kartan loppu taistelu: " << std::endl;
+            enemyKillName.push_back(bossFight(plr));
+            bossScaling += 2;
             printKillStats();
             std::cout << "uusi kartta" << std::endl;
             locx = 0;
@@ -150,7 +154,7 @@ std::string mapping::combat(Player& plr)
         }
         int enemyHitValue = enemyAttackValue + rand() % 6+1;                                            // vihu lyˆ pelaajaa
         std::cout << tier_1.getName() << " lyˆ: " << enemyHitValue << std::endl;
-        if (plr.getParry() >= enemyHitValue)  { enemyHitValue = 0; }                                    // if-else parryn laskemiseen
+        if (plr.getParry() >= enemyHitValue) { std::cout << "Torjuit iskun kokonaan!"<< std::endl; enemyHitValue = 0; }                                    // if-else parryn laskemiseen
         else {
             int newPlrHealthValue = plr.getHealth() - (enemyHitValue - plr.getParry());
             plr.setHealth(newPlrHealthValue);
@@ -161,7 +165,6 @@ std::string mapping::combat(Player& plr)
         {
             std::cout << tier_1.getName() << " Tappoi sinut!" << std::endl;
             std::cout << plr.getName() << " Kuoli!" << " XP: " << plr.getExp() << "\nGame Over Bro!" << std::endl;
-            csv::saveStats(plr.getName(), plr.getExp());
             isRunning = false;
         }
 
@@ -192,14 +195,14 @@ void mapping::printMap(std::vector<std::vector<char>>& playMap)
 
 void mapping::printKillStats()
 {
-    std::cout << "T‰ss‰ kartassa tuhosit: \n" << std::endl;
+    std::cout << "T‰ss‰ kartassa vastukset olivat: \n" << std::endl;
     for (int i = 0; i < enemyKillName.size(); i++)
     {
         std::cout << enemyKillName[i] << std::endl;
         enemyKillCounter[enemyKillName[i]]++;
     }
     enemyKillName.clear();                              // tarvinee tehd‰ "kaikki tuhotut" omanaan pelin lopuksi.
-    std::cout << "kaikki tuhotut: \n" << std::endl;
+    std::cout << "kaikki vastukset: \n" << std::endl;
     for (auto j : enemyKillCounter)
     {
         std::cout << j.first << " " << j.second << std::endl;
@@ -221,4 +224,79 @@ bool mapping::checkMap()                                // jotta toimii if-lause
         }
     }
     return mapHit;
+}
+
+std::string mapping::bossFight(Player& plr)
+{
+    enemyBoss bous = enemyBoss(csv::getEnemyName(), 0, 0, "HUAAAHUAHUA", 0);
+    bous.makeStats(bossScaling);
+    std::cout << "\nNimi: " << bous.getName() << "\nhealth: " << bous.getHealth() << "\nattack: " << bous.getAttack() << "\nXP value: " << bous.getExp() << std::endl;
+    bous.huuto();
+    int plrAttackValue = plr.getAttack();
+    int enemyAttackValue = bous.getAttack();
+    do
+    {
+        int plrHitvalue = plrAttackValue + rand() % 10 + 1;                                               // pelaaja lyˆ vihua
+        std::cout << plr.getName() << " lyˆ: " << plrHitvalue << std::endl;
+        int newEnemyHealthValue = bous.getHealth() - plrHitvalue;
+        bous.setHealth(newEnemyHealthValue);
+        std::cout << bous.getName() << " el‰m‰‰ j‰ljell‰: " << bous.getHealth() << std::endl;
+        std::cin.get();
+        if (bous.getHealth() <= 0)
+        {
+            std::cout << bous.getName() << " voitettu! GG!" << std::endl;
+            std::cout << "sait " << bous.getExp() << "XP" << std::endl;
+            int xpIncrease = plr.getExp() + bous.getExp();
+            plr.setExp(xpIncrease);
+            bossRewards(plr);
+            plr.setHealth(plr.getInitHealth());
+            std::cout << "Hahmon HP t‰ynn‰." << std::endl;
+            std::cin.get();
+            break;
+        }
+        int enemyHitValue = enemyAttackValue + rand() % 6 + 1;                                            // vihu lyˆ pelaajaa
+        std::cout << bous.getName() << " lyˆ: " << enemyHitValue << std::endl;
+        if (plr.getParry() >= enemyHitValue) { enemyHitValue = 0; }                                       // if-else parryn laskemiseen... if lauseen bodyss‰ ehv=0 on aikalailla turha.
+        else {
+            int newPlrHealthValue = plr.getHealth() - (enemyHitValue - plr.getParry());
+            plr.setHealth(newPlrHealthValue);
+        }
+        std::cout << plr.getName() << " el‰m‰‰ j‰ljell‰ " << plr.getHealth() << std::endl;
+        std::cin.get();
+        if (plr.getHealth() <= 0)
+        {
+            std::cout << bous.getName() << " Tappoi sinut!" << std::endl;
+            std::cout << plr.getName() << " Kuoli!" << " XP: " << plr.getExp() << "\nGame Over Bro!" << std::endl;
+            isRunning = false;
+        }
+    } while (plr.getHealth() > 0 && bous.getHealth() > 0);
+    return bous.getName();
+}
+
+void mapping::bossRewards(Player& plr)
+{
+    int rewardInput;
+    int addParry;
+    int addAttack;
+    int addHealth;
+    plr.showStatus();
+    std::cout << "valitse palkinto: " << "\n1. parry +1 \n2. attack +2 \n3. max health +15" << std::endl;
+    std::cin >> rewardInput;
+    switch (rewardInput)
+    {
+        case 1:
+            addParry = plr.getParry() + 1;
+            plr.setParry(addParry);
+            break;
+        case 2:
+            addAttack = plr.getAttack() + 2;
+            plr.setAttack(addAttack);
+            break;
+        case 3:
+            addHealth = plr.getInitHealth() + 15;
+            plr.setInitHealth(addHealth);
+            break;
+        default:
+            std::cout << "v‰‰r‰ syˆte" << std::endl;
+    }
 }

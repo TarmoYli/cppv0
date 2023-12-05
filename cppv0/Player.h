@@ -8,7 +8,7 @@
 class Player
 {
 public:
-	Player(int aHealth,int aAttack,int aParry,int aExp);
+	Player(int aInitHealth,int aHealth,int aAttack,int aParry,int aExp);
 	~Player();
 	void setHealth(int sHealth);
 	void setAttack(int sAttack);
@@ -16,6 +16,8 @@ public:
 	void setParry(int sParry);
 	void setName();
 	void showStatus();
+	void setInitHealth(int aInitHealth);
+	int getInitHealth();
 	int getHealth();
 	int getAttack();
 	int getParry();
@@ -28,6 +30,8 @@ protected:
 	int Parry;
 	int Exp;
 	std::string Name;
+private:
+	int initHealth;
 };
 
 #endif // !PLAYER

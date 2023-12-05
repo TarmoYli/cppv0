@@ -1,6 +1,5 @@
 #include "iEnemy.h"
 
-
 iEnemy::iEnemy(std::string aName,int aHealth,int aAttack,std::string aHut,int aExp)
 {
 	this->Name = aName;
@@ -14,7 +13,7 @@ iEnemy::~iEnemy(){}
 void iEnemy::makeStats()
 {
 	srand(time(0));
-	Health = rand() % 11 * 10;
+	Health = rand() % 6 * 10;
 	Attack = Health / 10 / 2;
 	Exp = Health / 10;
 }
