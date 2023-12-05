@@ -15,7 +15,7 @@ iEnemy::~iEnemy(){}
 void iEnemy::makeStats()
 {
 	srand(time(0));												// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
-	Health = (rand() % 5 + 1) * 10;
+	Health = (rand() % 5 + 1) * 10;								// ja tähän siis täytyy lisätä 1 jotta arvo ei voi koskaan olla 0
 	Attack = Health / 10 / 2;
 	Exp = Health / 10;
 }
