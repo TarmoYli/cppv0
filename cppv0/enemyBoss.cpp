@@ -16,10 +16,9 @@ void enemyBoss::huuto()
 }
 void enemyBoss::makeStats(int scaling)												// ottaa skaalautuvan arvon. 
 {
-	int scaleValue = scaling;
 	srand(time(0));
-	Health = (rand() % 6 + (5+scaleValue)) * 10;									// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
-	Attack = Health / 10 / 2 + (1+scaleValue);
+	Health = (rand() % 6 + (5+scaling)) * 10;									// rand palauttaa arvon N-1 eli (rand()%6)-> palauttaa arvon välillä 0-5
+	Attack = Health / 10 / 2 + (1+scaling);
 	Exp = Health / 10;
 }
 

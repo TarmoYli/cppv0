@@ -107,6 +107,7 @@ void mapping::printPlayMap(Player& plr)
             enemyKillCoords.push_back(std::make_pair(locy,locx));
             enemyKillName.push_back(combat(plr));
             counter += 1;
+
             //system("cls");
             //printMap(playMap);
             //std::cout << "y-akseli: " << locy << "\nx-akseli: " << locx << std::endl;
@@ -116,12 +117,15 @@ void mapping::printPlayMap(Player& plr)
         {
             std::cout << "kartta läpäisty. kartan loppu taistelu: " << std::endl;
             enemyKillName.push_back(bossFight(plr));
-            bossScaling += 2;
-            printKillStats();
-            std::cout << "uusi kartta" << std::endl;
-            locx = 0;
-            locy = 0;
-            mapSize();
+            if (plr.getHealth() > 0)
+            {
+                bossScaling += 2;
+                printKillStats();
+                std::cout << "uusi kartta" << std::endl;
+                locx = 0;
+                locy = 0;
+                mapSize();
+            }
         }
         inputReady = false;
     }
