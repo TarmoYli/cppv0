@@ -29,9 +29,18 @@ Exp = Health / 10;
 
 eli aluksi health on joku tasakymmen arvoasteikolla 50-100. kun yhden kartan läpäisee arvoasteikko muuttuu 70-120.
 ja tästä arvosta lasketaan myös bossin damage ja sen antama xp
+
 eli esimerkkinä kahden kartan jälkeen bossin statit:
 health: 90-140 (tasakymmen)
 attack: 14-17 tasaluvuin. (tässä todennäköisimmät vaihtoehdot ovat 15 tai 16 (molemmissa todennäköisyys on 2/6) koska mitään ei pyöristetä. suoraan intiksi.
 exp: 9-14 tasaluvuin
 
+pelin normi vihut eivät skaalaudu:
+Health = rand() % 6 * 10;
+Attack = Health / 10 / 2;
+Exp = Health / 10;
+
 lopuksi peli tallentaa pelaajan nimen ja xpn csv tiedostoon "statistics.csv"
+
+
+xp:n eli pisteiden maksimoimiseksi onko parempi selvittää useampi pieni kartta vai vähemmän isoja karttoja?
