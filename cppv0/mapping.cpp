@@ -214,14 +214,26 @@ bool mapping::checkForEnemy(int locy, int locx)
 
 void mapping::printMap(std::vector<std::vector<char>>& playMap)
 {
+    for (int i = 0; i < playMap[0].size()+2; i++)
+    {
+        std::cout << "* ";
+    }
+    std::cout << std::endl;
     for (const std::vector<char>& row : playMap)
     {
+        std::cout << "* ";
         for (char item : row)
         {
             std::cout << item << " ";
         }
+        std::cout << "*";
         std::cout << std::endl;
     }
+    for (int i = 0; i < playMap[0].size()+2; i++)
+    {
+        std::cout << "* ";
+    }
+    std::cout << std::endl;
 }
 
 void mapping::printKillStats()
