@@ -13,10 +13,37 @@ mapping::mapping() {};
 
 void mapping::mapSize()
 {
-    std::cout << "Anna x akselin pituus: " << std::endl;
-    std::cin >> xForMap;
-    std::cout << "Anna y akselin pituus: " << std::endl;
-    std::cin >> yForMap;
+    setlocale(LC_ALL, "fi-FI");
+    std::string xInput, yInput;
+    for (;;) {
+        std::cout << "Anna x akselin pituus: ";
+        std::cin >> xInput;
+
+        if (csv::checkInput(xInput)) {
+            xForMap = std::stoi(xInput);
+            break;
+        }
+        else {
+            std::cout << "Väärä syöte. Anna kokonaisluku." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
+
+    for (;;) {
+        std::cout << "Anna y akselin pituus: ";
+        std::cin >> yInput;
+
+        if (csv::checkInput(yInput)) {
+            yForMap = std::stoi(yInput);
+            break;
+        }
+        else {
+            std::cout << "Väärä syöte. Anna kokonaisluku." << std::endl;
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    }
 
     playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, '#'));
     setEnemyLocation(enemyCoords);
@@ -279,28 +306,44 @@ std::string mapping::bossFight(Player& plr)
 
 void mapping::bossRewards(Player& plr)
 {
-    int rewardInput;
+    int rewardInput = 0;
     int addParry;
     int addAttack;
     int addHealth;
     plr.showStatus();
-    std::cout << "valitse palkinto: " << "\n1. parry +1 \n2. attack +2 \n3. max health +15" << std::endl;
-    std::cin >> rewardInput;
-    switch (rewardInput)
+    do
     {
-        case 1:
-            addParry = plr.getParry() + 1;
-            plr.setParry(addParry);
-            break;
-        case 2:
-            addAttack = plr.getAttack() + 2;
-            plr.setAttack(addAttack);
-            break;
-        case 3:
-            addHealth = plr.getInitHealth() + 15;
-            plr.setInitHealth(addHealth);
-            break;
-        default:
-            std::cout << "väärä syöte" << std::endl;
-    }
+        std::cout << "valitse palkinto: " << "\n1. parry +1 \n2. attack +2 \n3. max health +15" << std::endl;
+        std::string choiceInput;
+        std::cin >> choiceInput;
+        if (csv::checkInput(choiceInput))
+        {
+            rewardInput = std::stoi(choiceInput);
+
+            switch (rewardInput)
+            {
+            case 1:
+                addParry = plr.getParry() + 1;
+                plr.setParry(addParry);
+                std::cout << "parry arvo nyt: " << plr.getParry() << std::endl;
+                break;
+            case 2:
+                addAttack = plr.getAttack() + 2;
+                plr.setAttack(addAttack);
+                std::cout << "attack arvo nyt: " << plr.getAttack() << std::endl;
+                break;
+            case 3:
+                addHealth = plr.getInitHealth() + 15;
+                plr.setInitHealth(addHealth);
+                std::cout << "maxHealth arvo nyt: " << plr.getInitHealth() << std::endl;
+                break;
+            default:
+                std::cout << "Anna kokonaisluku välillä 1-3" << std::endl;
+            }
+        }
+        else
+        {
+            std::cout << "väärä syöte. anna kokonaisluku välillä 1-3" << std::endl;
+        }
+    } while (rewardInput != 1 && rewardInput != 2 && rewardInput != 3);
 }

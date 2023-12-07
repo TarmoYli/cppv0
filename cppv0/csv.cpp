@@ -30,3 +30,20 @@ void csv::saveStats(std::string name, int xp)
 	fout.open("statistics.csv", std::ios::app);
 	fout << name << ';' << xp << '\n';
 }
+
+
+bool csv::checkInput(const std::string& input) {
+	if (input.empty())							// tarkistaa onko annettu syöte tyhjä
+	{											// ja
+		return false;							// palauttaa falsen jos on.
+	}
+
+	for (char c : input)						// tarkistaa merkit yksi kerrallaan syötteestä.
+	{
+		if (!std::isdigit(c))					// Jos ei ole int
+		{										// niin
+			return false;						// false palautetaan.
+		}
+	}
+	return true;
+}
