@@ -5,16 +5,11 @@ jotka määrittelevät peli kartan koon.
 
 pelaaja liikkuu kartalla käyttäen w,a,s,d näppäimiä.
 
-lähtöarvot pelaajalla:
-health = 100
-parry = 3
-attack = 0
-
-pelaajan damage lasketaan plr.attack() + rand() % 10 + 1 
-eli 0 lisätään 0-10.
+pelaajan damage lasketaan: plr.attack() + rand() % 10 + 1 
+eli esim. 5 lisätään 0-10 = damage.
 
 parry toimii automaattisesti.
-jos vihollinen lyö 0,1,2,3 niin et ota damagea.
+esim. pelaajan parry = 3 -> vihollinen lyö 0,1,2,3 niin et ota damagea.
 
 kartan päätteeksi jos voitat bossin,
 pelaaja saa palkinnoksi valintansa mukaisesti lisää joko max health arvoa, attackia tai parryä.
