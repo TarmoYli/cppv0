@@ -36,7 +36,7 @@ attack: 14-17 tasaluvuin. (tässä todennäköisimmät vaihtoehdot ovat 15 tai 1
 exp: 9-14 tasaluvuin
 
 pelin normi vihut eivät skaalaudu:
-Health = rand() % 6 * 10;
+Health = (rand() % 5 + 1) * 10;
 Attack = Health / 10 / 2;
 Exp = Health / 10;
 
