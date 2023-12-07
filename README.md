@@ -3,6 +3,8 @@
 Käyttäjältä pyydetään nimi, jonka jälkeen käyttäjältä pyydetään X ja Y koordinaatit
 jotka määrittelevät peli kartan koon.
 
+pelaaja liikkuu kartalla käyttäen w,a,s,d näppäimiä.
+
 lähtöarvot pelaajalla:
 health = 100
 parry = 3
