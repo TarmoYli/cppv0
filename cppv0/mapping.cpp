@@ -45,7 +45,7 @@ void mapping::mapSize()
         }
     }
 
-    playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, '#'));
+    playMap = std::vector<std::vector<char>>(yForMap, std::vector<char>(xForMap, ' '));
     setEnemyLocation(enemyCoords);
 }
 
@@ -254,7 +254,7 @@ void mapping::printKillStats()
 
 bool mapping::checkMap()                                // jotta toimii if-lauseessa oletuksena palautetaan true eli haussa ei löydy '#' merkkiä ja if toteutuu,
 {                                                       // jos haku tärppää eli vektoreista löytyy '#' niin palautetaan false jolloin if ei toteudu.
-    char target = '#';                                  
+    char target = ' ';                                  
     bool mapHit = true;
     for (const std::vector<char>& row : playMap)
     {
